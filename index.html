@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 适配移动端视口 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026跨年倒计时</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 倒计时区域样式 */
+        .countdown-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .time-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .num {
+            font-size: 50px;
+            font-weight: bold;
+            color: #ffd166;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            min-width: 80px;
+        }
+
+        .unit {
+            font-size: 16px;
+            color: #e0e0e0;
+        }
+
+        /* 新年祝福区域样式 */
+        .newyear-container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .wish-title {
+            font-size: 32px;
+            color: #ffd166;
+            margin-bottom: 30px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .wish-content {
+            font-size: 20px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* 烟花动画样式 */
+        .firework {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            opacity: 0;
+            animation: firework 2s infinite ease-out;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                background: radial-gradient(circle, #ffd166 0%, #ff6b6b 50%, #4ecdc4 100%);
+            }
+            100% {
+                transform: scale(15);
+                opacity: 0;
+            }
+        }
+
+        /* 适配小屏幕手机 */
+        @media (max-width: 375px) {
+            .num {
+                font-size: 40px;
+                padding: 10px 20px;
+                min-width: 70px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .wish-title {
+                font-size: 28px;
+            }
+
+            .wish-content {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 倒计时区域 -->
+    <div class="countdown-container" id="countdownBox">
+        <div class="title">距离2026年新年还有</div>
+        <div class="countdown">
+            <div class="time-item">
+                <div class="num" id="days">00</div>
+                <div class="unit">天</div>
+            </div>
+            <div class="time-item">
+                <div class="num" id="hours">00</div>
+                <div class="unit">时</div>
+            </div>
+            <div class="time-item">
+                <div class="num" id="minutes">00</div>
+                <div class="unit">分</div>
+            </div>
+            <div class="time-item">
+                <div class="num" id="seconds">00</div>
+                <div class="unit">秒</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新年祝福区域（初始隐藏） -->
+    <div class="newyear-container" id="newyearBox" style="display: none;"></div>
+
+    <script>
+        // 获取DOM元素
+        const countdownBox = document.getElementById('countdownBox');
+        const newyearBox = document.getElementById('newyearBox');
+        const daysEle = document.getElementById('days');
+        const hoursEle = document.getElementById('hours');
+        const minutesEle = document.getElementById('minutes');
+        const secondsEle = document.getElementById('seconds');
+
+        // 目标年份
+        const targetYear = 2026;
+        // 目标时间：2026年1月1日 00:00:00
+        const targetTime = new Date(targetYear, 0, 1, 0, 0, 0).getTime();
+
+        // 数字补零函数
+        function formatNumber(num) {
+            return num < 10 ? `0${num}` : num;
+        }
+
+        // 初始化烟花
+        function initFireworks() {
+            // 创建10个烟花元素
+            for (let i = 0; i < 10; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                // 随机位置
+                firework.style.left = `${Math.floor(10 + Math.random() * 80)}%`;
+                firework.style.top = `${Math.floor(10 + Math.random() * 80)}%`;
+                // 随机动画延迟
+                firework.style.animationDelay = `${i * 0.2}s`;
+                newyearBox.appendChild(firework);
+            }
+
+            // 添加祝福语
+            const wishTitle = document.createElement('div');
+            wishTitle.className = 'wish-title';
+            wishTitle.textContent = `🎉 ${targetYear}新年快乐！🎉`;
+            
+            const wish1 = document.createElement('div');
+            wish1.className = 'wish-content';
+            wish1.textContent = '所求皆如愿，所行皆坦途';
+            
+            const wish2 = document.createElement('div');
+            wish2.className = 'wish-content';
+            wish2.textContent = '新岁启封，美好常在，一路生花';
+            
+            const wish3 = document.createElement('div');
+            wish3.className = 'wish-content';
+            wish3.textContent = '告别过去，迎接新章，未来可期';
+
+            newyearBox.appendChild(wishTitle);
+            newyearBox.appendChild(wish1);
+            newyearBox.appendChild(wish2);
+            newyearBox.appendChild(wish3);
+        }
+
+        // 计算倒计时
+        function calculateCountdown() {
+            const now = new Date().getTime();
+            const diff = targetTime - now;
+
+            // 倒计时结束
+            if (diff <= 0) {
+                countdownBox.style.display = 'none';
+                newyearBox.style.display = 'flex';
+                initFireworks();
+                return;
+            }
+
+            // 计算天、时、分、秒
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            // 更新页面显示
+            daysEle.textContent = days;
+            hoursEle.textContent = formatNumber(hours);
+            minutesEle.textContent = formatNumber(minutes);
+            secondsEle.textContent = formatNumber(seconds);
+        }
+
+        // 初始化执行一次
+        calculateCountdown();
+        // 每秒更新一次
+        setInterval(calculateCountdown, 1000);
+
+        // 适配微信滑动回弹问题
+        document.body.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
